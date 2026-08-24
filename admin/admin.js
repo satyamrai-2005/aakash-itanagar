@@ -69,6 +69,7 @@ async function loadAdmin(user) {
 }
 
 $("loginForm").addEventListener("submit", async (e) => {
+  alert("Login Button is working")
 
   e.preventDefault();
 

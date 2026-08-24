@@ -1,5 +1,3 @@
-alert("ADMIN JS LOADED");
-
 const SUPABASE_URL = "https://mpafolafsarugztvdcfa.supabase.co";
 const SUPABASE_KEY = "sb_publishable_G_GWDzMhx2AT1HbCNepPDA_b8UY9jQN";
 
@@ -21,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     e.preventDefault();
 
-    alert("LOGIN BUTTON WORKING");
 
     const email =
       document.getElementById("loginEmail").value.trim();
@@ -46,6 +43,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     message.textContent = "Login successful!";
+    const loginScreen = document.querySelector(".login-wrap");
+    const dashboard = document.querySelector(".app");
+
+if (loginScreen) {
+  loginScreen.classList.add("hidden");
+}
+
+if (dashboard) {
+  dashboard.classList.remove("hidden");
+}
 
     console.log(data);
 

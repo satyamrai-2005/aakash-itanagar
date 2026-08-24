@@ -97,3 +97,31 @@ async function loadNotices() {
 document.addEventListener("DOMContentLoaded", function () {
   loadNotices();
 });
+document.querySelectorAll(".nav-btn").forEach(function (button) {
+  button.addEventListener("click", function () {
+
+    const sectionId = button.getAttribute("data-section");
+
+    document.querySelectorAll(".section").forEach(function (section) {
+      section.classList.remove("active");
+    });
+
+    const section = document.getElementById(sectionId);
+
+    if (section) {
+      section.classList.add("active");
+    }
+
+    document.querySelectorAll(".nav-btn").forEach(function (btn) {
+      btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    const title = document.getElementById("pageTitle");
+
+    if (title) {
+      title.textContent = button.textContent.trim();
+    }
+  });
+});

@@ -41,10 +41,9 @@ document.addEventListener("DOMContentLoaded", function () {
       message.textContent = error.message;
       return;
     }
-
-    message.textContent = "Login successful!";
-    const loginScreen = document.querySelector(".login-wrap");
-    const dashboard = document.querySelector(".app");
+message.textContent = "Login successful!";
+const loginScreen = document.querySelector(".login-wrap");
+const dashboard = document.querySelector(".app");
 
 if (loginScreen) {
   loginScreen.classList.add("hidden");

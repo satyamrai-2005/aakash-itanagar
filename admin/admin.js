@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 message.textContent = "Login successful!";
-const loginScreen = document.getElementById(".login-wrap");
+const loginScreen = document.querySelector(".login-wrap");
 const dashboard = document.querySelector(".app");
 
 if (loginScreen) {

@@ -1,0 +1,325 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f7fb;
+  color: #172033;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* LOGIN */
+
+.login-wrap {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: #eef3ff;
+}
+
+.login-card {
+  width: min(420px, 100%);
+  background: #fff;
+  padding: 32px;
+  border-radius: 18px;
+  box-shadow: 0 15px 40px rgba(0,0,0,.12);
+}
+
+.brand {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.brand span {
+  color: #1264ff;
+}
+
+.brand small {
+  font-size: 12px;
+  color: #667085;
+}
+
+.login-card h1 {
+  margin: 25px 0 5px;
+}
+
+.login-card form {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+/* FORM */
+
+input,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d8dee9;
+  border-radius: 9px;
+  background: #fff;
+  outline: none;
+}
+
+textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #1264ff;
+}
+
+/* BUTTONS */
+
+.btn {
+  border: 0;
+  border-radius: 9px;
+  padding: 11px 16px;
+  background: #e9eef7;
+  color: #172033;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.btn.primary {
+  background: #1264ff;
+  color: #fff;
+}
+
+.btn.danger {
+  background: #fee4e2;
+  color: #b42318;
+}
+
+/* APP */
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 245px;
+  background: #101828;
+  color: #fff;
+  padding: 22px 14px;
+  position: fixed;
+  inset: 0 auto 0 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar nav {
+  display: grid;
+  gap: 5px;
+  margin-top: 25px;
+}
+
+.nav-btn {
+  border: 0;
+  background: transparent;
+  color: #cbd5e1;
+  text-align: left;
+  padding: 11px 13px;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  background: rgba(255,255,255,.1);
+  color: #fff;
+}
+
+.logout {
+  margin-top: auto;
+  border: 1px solid rgba(255,255,255,.15);
+  background: transparent;
+  color: #fff;
+  padding: 10px;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+/* MAIN */
+
+.main {
+  margin-left: 245px;
+  width: calc(100% - 245px);
+  padding: 28px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 25px;
+}
+
+.topbar h2 {
+  margin: 0 0 4px;
+}
+
+.badge {
+  background: #e9eef7;
+  color: #344054;
+  padding: 7px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* SECTIONS */
+
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+}
+
+/* DASHBOARD */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat,
+.panel {
+  background: #fff;
+  border: 1px solid #e7eaf0;
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 30px;
+}
+
+.stat span {
+  color: #667085;
+  font-size: 13px;
+}
+
+.quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* HEADERS */
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.section-head h3 {
+  margin: 0;
+}
+
+/* TABLE */
+
+.table-wrap {
+  background: #fff;
+  border: 1px solid #e7eaf0;
+  border-radius: 15px;
+  overflow: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 13px;
+  border-bottom: 1px solid #eef1f5;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table th {
+  font-size: 12px;
+  color: #667085;
+  background: #fafbfc;
+}
+
+.actions {
+  display: flex;
+  gap: 7px;
+}
+
+/* FORM GRID */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.form-grid .full {
+  grid-column: 1 / -1;
+}
+
+/* MODAL */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(16,24,40,.5);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  z-index: 10;
+}
+
+.modal-card {
+  background: #fff;
+  border-radius: 16px;
+  width: min(650px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  padding: 22px;
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.modal-head h3 {
+  margin: 0;
+}
+
+.modal-head button {
+  border: 0;
+  background: #f2f4f7;
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  font-size

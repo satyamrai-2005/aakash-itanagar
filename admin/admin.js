@@ -42,19 +42,14 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 message.textContent = "Login successful!";
-const loginScreen = document.getElementById("loginView");
-const dashboard = document.getElementById("app");
 
-if (loginScreen) {
-  loginScreen.style.display = "none";
-}
+const loginView = document.getElementById("loginView");
+const app = document.getElementById("app");
 
-if (dashboard) {
-  dashboard.classList.remove("hidden");
-  dashboard.style.display = "block";
-}
-    console.log(data);
+loginView.classList.add("hidden");
+app.classList.remove("hidden");
 
+console.log("Dashboard opened");
   });
 
 });

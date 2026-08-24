@@ -124,4 +124,40 @@ document.querySelectorAll(".nav-btn").forEach(function (button) {
       title.textContent = button.textContent.trim();
     }
   });
+  document.addEventListener("click", function (e) {
+  const button = e.target.closest(".nav-btn");
+
+  if (!button) return;
+
+  e.preventDefault();
+
+  const sectionId = button.dataset.section;
+
+  document.querySelectorAll(".section").forEach(function (section) {
+    section.classList.remove("active");
+  });
+
+  const section = document.getElementById(sectionId);
+
+  if (section) {
+    section.classList.add("active");
+  }
+
+  document.querySelectorAll(".nav-btn").forEach(function (btn) {
+    btn.classList.remove("active");
+  });
+
+  button.classList.add("active");
+
+  const pageTitle = document.getElementById("pageTitle");
+
+  if (pageTitle) {
+    pageTitle.textContent = button.textContent.trim();
+  }
+
+  if (sectionId === "notices") {
+    loadNotices();
+  }
+});
+  
 });

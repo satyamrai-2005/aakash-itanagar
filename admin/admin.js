@@ -58,3 +58,47 @@ if (dashboard) {
   });
 
 });
+// ===============================
+// LOAD NOTICES
+// ===============================
+async function loadNotices() {
+  const noticesList = document.getElementById("noticesList");
+
+  if (!noticesList) return;
+
+  noticesList.innerHTML = "Loading notices...";
+
+  const { data, error } = await supabaseClient
+    .from("notices")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Notices error:", error);
+    noticesList.innerHTML = "Error loading notices: " + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    noticesList.innerHTML = "No notices found.";
+    return;
+  }
+
+  noticesList.innerHTML = data.map((notice) => `
+    <div class="notice-card">
+      <h4>${notice.title || "Notice"}</h4>
+      <p>${notice.content || notice.description || ""}</p>
+      <small>
+        ${notice.created_at
+          ? new Date(notice.created_at).toLocaleDateString()
+          : ""}
+      </small>
+    </div>
+  `).join("");
+}
+
+
+// Load notices when dashboard opens
+document.addEventListener("DOMContentLoaded", function () {
+  loadNotices();
+});

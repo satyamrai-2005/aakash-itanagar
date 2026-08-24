@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Aakash Itanagar — Admin Panel</title>
+
+  <link rel="stylesheet" href="admin.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+  <div id="loginView" class="login-wrap">
+    <div class="login-card">
+
+      <div class="brand">
+        Aakash<span>.</span> <small>Itanagar</small>
+      </div>
+
+      <h1>Admin Login</h1>
+      <p class="muted">
+        Sign in to manage your branch website.
+      </p>
+
+      <form id="loginForm">
+
+        <input
+          id="loginEmail"
+          type="email"
+          placeholder="Email"
+          required
+        >
+
+        <input
+          id="loginPassword"
+          type="password"
+          placeholder="Password"
+          required
+        >
+
+        <button class="btn primary" type="submit">
+          Sign in
+        </button>
+
+        <p id="loginMsg" class="msg"></p>
+
+      </form>
+
+    </div>
+  </div>
+
+
+  <div id="app" class="app hidden">
+
+    <aside class="sidebar">
+
+      <div class="brand">
+        Aakash<span>.</span> <small>Admin</small>
+      </div>
+
+      <nav>
+
+        <button class="nav-btn active" data-section="dashboard">
+          Dashboard
+        </button>
+
+        <button class="nav-btn" data-section="settings">
+          Website Settings
+        </button>
+
+        <button class="nav-btn" data-section="courses">
+          Courses
+        </button>
+
+        <button class="nav-btn" data-section="foundation">
+          Foundation
+        </button>
+
+        <button class="nav-btn" data-section="faculty">
+          Faculty
+        </button>
+
+        <button class="nav-btn" data-section="notices">
+          Notices
+        </button>
+
+        <button class="nav-btn" data-section="tests">
+          Tests
+        </button>
+
+        <button class="nav-btn" data-section="results">
+          Results
+        </button>
+
+        <button class="nav-btn" data-section="gallery">
+          Gallery
+        </button>
+
+        <button class="nav-btn" data-section="faqs">
+          FAQs
+        </button>
+
+        <button class="nav-btn" data-section="enquiries">
+          Enquiries
+        </button>
+
+      </nav>
+
+      <button id="logoutBtn" class="logout">
+        Sign out
+      </button>
+
+    </aside>
+
+
+    <main class="main">
+
+      <header class="topbar">
+
+        <div>
+          <h2 id="pageTitle">Dashboard</h2>
+          <p class="muted">
+            Aakash Institute — Itanagar
+          </p>
+        </div>
+
+        <span id="adminRole" class="badge">
+          Super Admin
+        </span>
+
+      </header>
+
+
+      <section id="dashboard" class="section active">
+
+        <div class="cards">
+
+          <div class="stat">
+            <strong id="statCourses">—</strong>
+            <span>Courses</span>
+          </div>
+
+          <div class="stat">
+            <strong id="statFoundation">—</strong>
+            <span>Foundation Classes</span>
+          </div>
+
+          <div class="stat">
+            <strong id="statNotices">—</strong>
+            <span>Notices</span>
+          </div>
+
+          <div class="stat">
+            <strong id="statEnquiries">—</strong>
+            <span>Enquiries</span>
+          </div>
+
+        </div>
+
+        <div class="panel">
+
+          <h3>Quick Actions</h3>
+
+          <div class="quick">
+
+            <button class="btn" data-go="settings">
+              Website Settings
+            </button>
+
+            <button class="btn" data-go="foundation">
+              Manage Foundation
+            </button>
+
+            <button class="btn" data-go="notices">
+              Add Notice
+            </button>
+
+            <button class="btn" data-go="enquiries">
+              View Enquiries
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <section id="settings" class="section">
+
+        <div class="panel">
+
+          <h3>Website Settings</h3>
+
+          <form id="settingsForm" class="form-grid">
+
+            <input id="siteName" placeholder="Site name">
+            <input id="phone" placeholder="Phone">
+            <input id="email" placeholder="Email">
+            <input id="address" placeholder="Address">
+            <input id="branchHours" placeholder="Branch hours">
+            <input id="logoUrl" placeholder="Logo image URL">
+
+            <input
+              id="heroTitle"
+              class="full"
+              placeholder="Hero title"
+            >
+
+            <textarea
+              id="heroDescription"
+              class="full"
+              placeholder="Hero description"
+            ></textarea>
+
+            <button class="btn primary" type="submit">
+              Save Settings
+            </button>
+
+            <p id="settingsMsg" class="msg"></p>
+
+          </form>
+
+        </div>
+
+      </section>
+
+
+      <section id="courses" class="section">
+        <div class="section-head">
+          <h3>Courses</h3>
+          <button class="btn primary">Add Course</button>
+        </div>
+        <div id="coursesList" class="table-wrap"></div>
+      </section>
+
+
+      <section id="foundation" class="section">
+        <div class="section-head">
+          <h3>Foundation Classes</h3>
+          <button class="btn primary">Add Class</button>
+        </div>
+        <div id="foundationList" class="table-wrap"></div>
+      </section>
+
+
+      <section id="faculty" class="section">
+        <div class="section-head">
+          <h3>Faculty</h3>
+          <button class="btn primary">Add Faculty</button>
+        </div>
+        <div id="facultyList" class="table-wrap"></div>
+      </section>
+
+
+      <section id="notices" class="section">
+        <div class="section-head">
+          <h3>Notices</h3>
+          <button class="btn primary">Add Notice</button>
+        </div>
+        <div id="noticesList" class="table-wrap"></div>
+      </section>
+
+
+      <section id="tests" class="section">
+        <div class="section-head">
+          <h3>Tests</h3>
+          <button class="btn primary">Add Test</button>
+        </div>
+        <div id="testsList" class="table-wrap"></div>
+      </section>
+
+
+      <section id="results" class="section">
+        <div class="section-head">
+          <h3>Results</h3>
+          <button class="btn primary">Add Result</button>
+        </div>
+        <div id="resultsList" class="table-wrap"></div>
+      </section>
+
+
+      <section id="gallery" class="section">
+        <div class="section-head">
+          <h3>Gallery</h3>
+          <button class="btn primary">Add Image</button>
+        </div>
+        <div id="galleryList" class="table-wrap"></div>
+      </section>
+
+
+      <section id="faqs" class="section">
+        <div class="section-head">
+          <h3>FAQs</h3>
+          <button class="btn primary">Add FAQ</button>
+        </div>
+        <div id="faqsList" class="table-wrap"></div>
+      </section>
+
+
+      <section id="enquiries" class="section">
+        <div class="section-head">
+          <h3>Admission Enquiries</h3>
+        </div>
+        <div id="enquiriesList" class="table-wrap"></div>
+      </section>
+
+    </main>
+
+  </div>
+
+
+  <script src="admin.js"></script>
+
+</body>
+</html>

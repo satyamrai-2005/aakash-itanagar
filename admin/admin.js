@@ -42,17 +42,17 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 message.textContent = "Login successful!";
-const loginScreen = document.querySelector(".login-wrap");
-const dashboard = document.querySelector(".app");
+const loginScreen = document.getElementById("loginView");
+const dashboard = document.getElementById("app");
 
 if (loginScreen) {
-  loginScreen.classList.add("hidden");
+  loginScreen.style.display = "none";
 }
 
 if (dashboard) {
   dashboard.classList.remove("hidden");
+  dashboard.style.display = "block";
 }
-
     console.log(data);
 
   });

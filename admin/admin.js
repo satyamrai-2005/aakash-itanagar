@@ -1,318 +1,298 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Aakash Itanagar — Admin Panel</title>
+const SUPABASE_URL = "PASTE_PROJECT_URL_HERE";
+const SUPABASE_KEY = "PASTE_PUBLISHABLE_KEY_HERE";
 
-  <link rel="stylesheet" href="admin.css">
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
+let currentAdmin = null;
 
-<body>
+const $ = (id) => document.getElementById(id);
 
-  <div id="loginView" class="login-wrap">
-    <div class="login-card">
+function showLogin(message = "") {
+  $("loginView").classList.remove("hidden");
+  $("app").classList.add("hidden");
+  $("loginMsg").textContent = message;
+}
 
-      <div class="brand">
-        Aakash<span>.</span> <small>Itanagar</small>
-      </div>
+function showApp() {
+  $("loginView").classList.add("hidden");
+  $("app").classList.remove("hidden");
+}
 
-      <h1>Admin Login</h1>
-      <p class="muted">
-        Sign in to manage your branch website.
-      </p>
+/* =========================
+   LOGIN
+========================= */
 
-      <form id="loginForm">
+async function checkSession() {
+  const {
+    data: { session }
+  } = await supabaseClient.auth.getSession();
 
-        <input
-          id="loginEmail"
-          type="email"
-          placeholder="Email"
-          required
-        >
+  if (!session) {
+    showLogin();
+    return;
+  }
 
-        <input
-          id="loginPassword"
-          type="password"
-          placeholder="Password"
-          required
-        >
+  await loadAdmin(session.user);
+}
 
-        <button class="btn primary" type="submit">
-          Sign in
-        </button>
+async function loadAdmin(user) {
 
-        <p id="loginMsg" class="msg"></p>
+  const { data, error } = await supabaseClient
+    .from("admin_users")
+    .select("*")
+    .eq("id", user.id)
+    .eq("is_active", true)
+    .single();
 
-      </form>
+  if (error || !data) {
+    await supabaseClient.auth.signOut();
 
-    </div>
-  </div>
+    showLogin(
+      "This account is not authorized as an administrator."
+    );
 
+    return;
+  }
 
-  <div id="app" class="app hidden">
+  currentAdmin = data;
 
-    <aside class="sidebar">
+  $("adminRole").textContent =
+    data.role.replace("_", " ").toUpperCase();
 
-      <div class="brand">
-        Aakash<span>.</span> <small>Admin</small>
-      </div>
+  showApp();
 
-      <nav>
+  loadDashboard();
+  loadSettings();
+}
 
-        <button class="nav-btn active" data-section="dashboard">
-          Dashboard
-        </button>
+$("loginForm").addEventListener("submit", async (e) => {
 
-        <button class="nav-btn" data-section="settings">
-          Website Settings
-        </button>
+  e.preventDefault();
 
-        <button class="nav-btn" data-section="courses">
-          Courses
-        </button>
+  $("loginMsg").textContent = "Signing in...";
 
-        <button class="nav-btn" data-section="foundation">
-          Foundation
-        </button>
+  const email = $("loginEmail").value.trim();
+  const password = $("loginPassword").value;
 
-        <button class="nav-btn" data-section="faculty">
-          Faculty
-        </button>
+  const { data, error } =
+    await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
 
-        <button class="nav-btn" data-section="notices">
-          Notices
-        </button>
+  if (error) {
+    $("loginMsg").textContent = error.message;
+    return;
+  }
 
-        <button class="nav-btn" data-section="tests">
-          Tests
-        </button>
+  await loadAdmin(data.user);
+});
 
-        <button class="nav-btn" data-section="results">
-          Results
-        </button>
 
-        <button class="nav-btn" data-section="gallery">
-          Gallery
-        </button>
+/* =========================
+   LOGOUT
+========================= */
 
-        <button class="nav-btn" data-section="faqs">
-          FAQs
-        </button>
+$("logoutBtn").addEventListener("click", async () => {
 
-        <button class="nav-btn" data-section="enquiries">
-          Enquiries
-        </button>
+  await supabaseClient.auth.signOut();
 
-      </nav>
+  currentAdmin = null;
 
-      <button id="logoutBtn" class="logout">
-        Sign out
-      </button>
+  showLogin("You have been signed out.");
+});
 
-    </aside>
 
+/* =========================
+   NAVIGATION
+========================= */
 
-    <main class="main">
+document.querySelectorAll(".nav-btn").forEach((button) => {
 
-      <header class="topbar">
+  button.addEventListener("click", () => {
 
-        <div>
-          <h2 id="pageTitle">Dashboard</h2>
-          <p class="muted">
-            Aakash Institute — Itanagar
-          </p>
-        </div>
+    const section = button.dataset.section;
 
-        <span id="adminRole" class="badge">
-          Super Admin
-        </span>
+    document
+      .querySelectorAll(".section")
+      .forEach((item) =>
+        item.classList.remove("active")
+      );
 
-      </header>
+    $(section).classList.add("active");
 
+    document
+      .querySelectorAll(".nav-btn")
+      .forEach((item) =>
+        item.classList.remove("active")
+      );
 
-      <section id="dashboard" class="section active">
+    button.classList.add("active");
 
-        <div class="cards">
+    $("pageTitle").textContent =
+      section.charAt(0).toUpperCase() +
+      section.slice(1);
+  });
 
-          <div class="stat">
-            <strong id="statCourses">—</strong>
-            <span>Courses</span>
-          </div>
+});
 
-          <div class="stat">
-            <strong id="statFoundation">—</strong>
-            <span>Foundation Classes</span>
-          </div>
 
-          <div class="stat">
-            <strong id="statNotices">—</strong>
-            <span>Notices</span>
-          </div>
+/* =========================
+   DASHBOARD
+========================= */
 
-          <div class="stat">
-            <strong id="statEnquiries">—</strong>
-            <span>Enquiries</span>
-          </div>
+async function loadDashboard() {
 
-        </div>
+  const tables = [
+    ["courses", "statCourses"],
+    ["foundation_classes", "statFoundation"],
+    ["notices", "statNotices"],
+    ["admission_enquiries", "statEnquiries"]
+  ];
 
-        <div class="panel">
+  for (const [table, element] of tables) {
 
-          <h3>Quick Actions</h3>
+    const { count } = await supabaseClient
+      .from(table)
+      .select("*", {
+        count: "exact",
+        head: true
+      });
 
-          <div class="quick">
+    $(element).textContent = count || 0;
+  }
+}
 
-            <button class="btn" data-go="settings">
-              Website Settings
-            </button>
 
-            <button class="btn" data-go="foundation">
-              Manage Foundation
-            </button>
+/* =========================
+   WEBSITE SETTINGS
+========================= */
 
-            <button class="btn" data-go="notices">
-              Add Notice
-            </button>
+async function loadSettings() {
 
-            <button class="btn" data-go="enquiries">
-              View Enquiries
-            </button>
+  const { data, error } =
+    await supabaseClient
+      .from("website_settings")
+      .select("*")
+      .limit(1)
+      .single();
 
-          </div>
+  if (error || !data) return;
 
-        </div>
+  $("siteName").value = data.site_name || "";
+  $("phone").value = data.phone || "";
+  $("email").value = data.email || "";
+  $("address").value = data.address || "";
+  $("branchHours").value = data.branch_hours || "";
+  $("logoUrl").value = data.logo_url || "";
+  $("heroTitle").value = data.hero_title || "";
+  $("heroDescription").value =
+    data.hero_description || "";
+}
 
-      </section>
 
+$("settingsForm").addEventListener(
+  "submit",
+  async (e) => {
 
-      <section id="settings" class="section">
+    e.preventDefault();
 
-        <div class="panel">
+    const payload = {
 
-          <h3>Website Settings</h3>
+      site_name: $("siteName").value,
 
-          <form id="settingsForm" class="form-grid">
+      phone: $("phone").value,
 
-            <input id="siteName" placeholder="Site name">
-            <input id="phone" placeholder="Phone">
-            <input id="email" placeholder="Email">
-            <input id="address" placeholder="Address">
-            <input id="branchHours" placeholder="Branch hours">
-            <input id="logoUrl" placeholder="Logo image URL">
+      email: $("email").value,
 
-            <input
-              id="heroTitle"
-              class="full"
-              placeholder="Hero title"
-            >
+      address: $("address").value,
 
-            <textarea
-              id="heroDescription"
-              class="full"
-              placeholder="Hero description"
-            ></textarea>
+      branch_hours:
+        $("branchHours").value,
 
-            <button class="btn primary" type="submit">
-              Save Settings
-            </button>
+      logo_url:
+        $("logoUrl").value,
 
-            <p id="settingsMsg" class="msg"></p>
+      hero_title:
+        $("heroTitle").value,
 
-          </form>
+      hero_description:
+        $("heroDescription").value,
 
-        </div>
+      updated_at:
+        new Date().toISOString()
+    };
 
-      </section>
 
+    const { data: existing } =
+      await supabaseClient
+        .from("website_settings")
+        .select("id")
+        .limit(1)
+        .single();
 
-      <section id="courses" class="section">
-        <div class="section-head">
-          <h3>Courses</h3>
-          <button class="btn primary">Add Course</button>
-        </div>
-        <div id="coursesList" class="table-wrap"></div>
-      </section>
 
+    let result;
 
-      <section id="foundation" class="section">
-        <div class="section-head">
-          <h3>Foundation Classes</h3>
-          <button class="btn primary">Add Class</button>
-        </div>
-        <div id="foundationList" class="table-wrap"></div>
-      </section>
+    if (existing) {
 
+      result =
+        await supabaseClient
+          .from("website_settings")
+          .update(payload)
+          .eq("id", existing.id);
 
-      <section id="faculty" class="section">
-        <div class="section-head">
-          <h3>Faculty</h3>
-          <button class="btn primary">Add Faculty</button>
-        </div>
-        <div id="facultyList" class="table-wrap"></div>
-      </section>
+    } else {
 
+      result =
+        await supabaseClient
+          .from("website_settings")
+          .insert(payload);
 
-      <section id="notices" class="section">
-        <div class="section-head">
-          <h3>Notices</h3>
-          <button class="btn primary">Add Notice</button>
-        </div>
-        <div id="noticesList" class="table-wrap"></div>
-      </section>
+    }
 
 
-      <section id="tests" class="section">
-        <div class="section-head">
-          <h3>Tests</h3>
-          <button class="btn primary">Add Test</button>
-        </div>
-        <div id="testsList" class="table-wrap"></div>
-      </section>
+    if (result.error) {
 
+      $("settingsMsg").textContent =
+        result.error.message;
 
-      <section id="results" class="section">
-        <div class="section-head">
-          <h3>Results</h3>
-          <button class="btn primary">Add Result</button>
-        </div>
-        <div id="resultsList" class="table-wrap"></div>
-      </section>
+      return;
+    }
 
 
-      <section id="gallery" class="section">
-        <div class="section-head">
-          <h3>Gallery</h3>
-          <button class="btn primary">Add Image</button>
-        </div>
-        <div id="galleryList" class="table-wrap"></div>
-      </section>
+    $("settingsMsg").textContent =
+      "Settings saved successfully.";
+  }
+);
 
 
-      <section id="faqs" class="section">
-        <div class="section-head">
-          <h3>FAQs</h3>
-          <button class="btn primary">Add FAQ</button>
-        </div>
-        <div id="faqsList" class="table-wrap"></div>
-      </section>
+/* =========================
+   GENERIC TABLE LOADER
+========================= */
 
+async function loadTable(
+  table,
+  element,
+  columns
+) {
 
-      <section id="enquiries" class="section">
-        <div class="section-head">
-          <h3>Admission Enquiries</h3>
-        </div>
-        <div id="enquiriesList" class="table-wrap"></div>
-      </section>
+  const { data, error } =
+    await supabaseClient
+      .from(table)
+      .select("*")
+      .order("created_at", {
+        ascending: false
+      });
 
-    </main>
+  if (error) {
 
-  </div>
+    $(element).innerHTML =
+      `<div class="empty">
+        ${error.message}
+      </div>`;
 
-
-  <script src="admin.js"></script>
-
-</body>
-</html>
+    return;
